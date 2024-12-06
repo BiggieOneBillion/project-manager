@@ -18,7 +18,8 @@ I built this basic project manager tool to help me manager my projects. You can 
 ## Screenshots
 
 ![App Screenshot](./public/screenshot.png)
-![App Screenshot](./public/screenshot-2.png)
+
+![App Screenshot](./public/screen-shot.png)
 
 
 ## Run Locally
