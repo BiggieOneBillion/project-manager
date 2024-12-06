@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Project {
+  id                  Int                 @id @default(autoincrement())
+  project_name        String
+  project_description String
+  category            String
+  kick_off_date       DateTime            @default(now())
+  end_date            DateTime
+  employees           ProjectEmployee[]
+  activities          Activity[]
+}
+
+model Employee {
+  id         Int                 @id @default(autoincrement())
+  firstname  String
+  lastname   String
+  job        String
+  gender     String
+  email      String             @unique
+  projects   ProjectEmployee[]
+  activities EmployeeActivity[]
+}
+
+model ProjectEmployee {
+  id          Int       @id @default(autoincrement())
+  project_id  Int
+  employee_id Int
+  project     Project   @relation(fields: [project_id], references: [id])
+  employee    Employee  @relation(fields: [employee_id], references: [id])
+
+  @@unique([project_id, employee_id]) // Ensures an employee is not added to the same project multiple times
+}
+
+model Activity {
+  id          Int                 @id @default(autoincrement())
+  description String
+  project_id  Int
+  project     Project             @relation(fields: [project_id], references: [id])
+  employees   EmployeeActivity[]
+}
+
+model EmployeeActivity {
+  id          Int       @id @default(autoincrement())
+  activity_id Int
+  employee_id Int
+  activity    Activity  @relation(fields: [activity_id], references: [id])
+  employee    Employee  @relation(fields: [employee_id], references: [id])
+
+  @@unique([activity_id, employee_id]) // Ensures an employee is not assigned to the same activity multiple times
+}
