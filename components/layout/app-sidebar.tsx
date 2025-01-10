@@ -36,7 +36,6 @@ import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
 import {
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger
 } from '../ui/dropdown-menu';
 import axios from 'axios';
