@@ -34,6 +34,7 @@ import { Calendar as CalendarIcon } from 'lucide-react';
 import axios from 'axios';
 import { useUserDetailsStore, useUserDetailsType } from '@/lib/manager-store';
 import { useButtonState } from '@/hooks/use-button-state';
+import { useRouter } from 'next/navigation';
 
 export const categoryData = [
   {
@@ -51,7 +52,7 @@ export const categoryData = [
   {
     label: 'Event Planning',
     value: 'Event Planning'
-  },
+  }
 ];
 
 const formSchema = z.object({
@@ -64,9 +65,9 @@ const formSchema = z.object({
 });
 
 export default function ProjectForm() {
+  const { handleIsSubmitFalse, handleIsSubmitTrue, StateButton } =
+    useButtonState();
 
-  const {handleIsSubmitFalse, handleIsSubmitTrue, StateButton} = useButtonState()
- 
   const userDetails = useUserDetailsStore(
     (state: unknown) => (state as useUserDetailsType).userDetails
   );
@@ -80,26 +81,32 @@ export default function ProjectForm() {
     }
   });
 
+  const router = useRouter();
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
-     handleIsSubmitTrue()
+    handleIsSubmitTrue();
     try {
-      const response = await axios.post('/api/project', {...values, userId: userDetails.id})
-      
+      const response = await axios.post('/api/project', {
+        ...values,
+        userId: userDetails.id
+      });
+
       if (response.status === 200) {
-        toast.success(
-          'Project created successfully.',
-        );
+        toast.success('Project created successfully.');
+
         form.reset({
-            project_name: "",
-            project_description: "",
-            kick_off_date: new Date(),
-            end_date: new Date(),
-            project_category: "",
+          project_name: '',
+          project_description: '',
+          kick_off_date: new Date(),
+          end_date: new Date(),
+          project_category: ''
         });
+
+        router.push(`/dashboard/project/manage/${response.data.record.id}`);
       }
-      handleIsSubmitFalse()
+      handleIsSubmitFalse();
     } catch (error) {
-      handleIsSubmitFalse()
+      handleIsSubmitFalse();
       // console.error('Form submission error', error);
       toast.error('Failed to submit the form. Please try again.');
     }
@@ -162,11 +169,11 @@ export default function ProjectForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {
-                    categoryData.map((item,i) => (
-                       <SelectItem key={i} value={item.label}>{item.value}</SelectItem>
-                    ))
-                  }
+                  {categoryData.map((item, i) => (
+                    <SelectItem key={i} value={item.label}>
+                      {item.value}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormDescription>
@@ -177,8 +184,8 @@ export default function ProjectForm() {
           )}
         />
 
-        <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-6">
+        <div className="gap-4 md:grid md:grid-cols-12">
+          <div className="w-full md:col-span-6">
             <FormField
               control={form.control}
               name="kick_off_date"
@@ -191,7 +198,7 @@ export default function ProjectForm() {
                         <Button
                           variant={'outline'}
                           className={cn(
-                            'w-[240px] pl-3 text-left font-normal',
+                            'min-w-[240px] pl-3 text-left font-normal',
                             !field.value && 'text-muted-foreground'
                           )}
                         >
@@ -220,7 +227,7 @@ export default function ProjectForm() {
             />
           </div>
 
-          <div className="col-span-6">
+          <div className="w-full md:col-span-6">
             <FormField
               control={form.control}
               name="end_date"
@@ -233,7 +240,7 @@ export default function ProjectForm() {
                         <Button
                           variant={'outline'}
                           className={cn(
-                            'w-[240px] pl-3 text-left font-normal',
+                            'min-w-[240px] pl-3 text-left font-normal',
                             !field.value && 'text-muted-foreground'
                           )}
                         >

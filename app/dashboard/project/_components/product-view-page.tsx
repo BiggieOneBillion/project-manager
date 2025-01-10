@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
-import ProductForm from './product-form';
-import { Product2 } from '@/constants/data';
+import ProjectForm from './project-form';
+import { Project } from '@/constants/data';
 import pb from '@/lib/pocketbase';
 
 type TProductViewPageProps = {
@@ -14,16 +14,15 @@ export default async function ProductViewPage({
   let pageTitle = 'Create New Project';
 
   if (projectId !== 'new') {
-    const data =  await pb.collection('Project').getOne(projectId)
-    
-     product = data as Product2;
+    const data = await pb.collection('Project').getOne(projectId);
+
+    product = data as Project;
 
     if (!product) {
       notFound();
     }
     pageTitle = `Edit Project`;
   }
-  
 
-  return <ProductForm initialData={product} pageTitle={pageTitle} />;
+  return <ProjectForm initialData={product} pageTitle={pageTitle} />;
 }

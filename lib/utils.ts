@@ -15,6 +15,7 @@ export function hasDraggableData<T extends Active | Over>(
 ): entry is T & {
   data: DataRef<DraggableData>;
 } {
+  console.log('From function:==', entry);
   if (!entry) {
     return false;
   }

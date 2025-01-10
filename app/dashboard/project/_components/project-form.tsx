@@ -18,7 +18,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Product2 } from '@/constants/data';
+import { Project } from '@/constants/data';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -26,7 +26,7 @@ import SelectDate from './select-date';
 import { categoryData } from '@/app/dashboard/create-project/_components/project-form';
 import { toast } from 'sonner';
 import axios from 'axios';
-import {useRevalidateQuery} from "@/hooks/use-revalidate-query";
+import { useRevalidateQuery } from '@/hooks/use-revalidate-query';
 import { useUserDetailsStore, useUserDetailsType } from '@/lib/manager-store';
 import { useButtonState } from '@/hooks/use-button-state';
 
@@ -42,23 +42,18 @@ const formSchema = z.object({
   })
 });
 
-
-
-export default function ProductForm({
+export default function ProjectForm({
   initialData,
   pageTitle
 }: {
-  initialData: Product2 | null;
+  initialData: Project | null;
   pageTitle: string;
 }) {
-
   const revalidateQuery = useRevalidateQuery('projects');
 
   const userDetails = useUserDetailsStore(
     (state: unknown) => (state as useUserDetailsType).userDetails
   );
-
-  
 
   const default_start_date = new Date(initialData?.kick_off_date || '');
   const default_end_date = new Date(initialData?.end_date || '');
@@ -75,20 +70,21 @@ export default function ProductForm({
     values: defaultValues
   });
 
-  const {handleIsSubmitFalse, handleIsSubmitTrue, StateButton} = useButtonState()
+  const { handleIsSubmitFalse, handleIsSubmitTrue, StateButton } =
+    useButtonState();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    handleIsSubmitTrue()
+    handleIsSubmitTrue();
     try {
-      const data = { ...values, id: initialData?.id, userId:userDetails.id }; // add id to the data
+      const data = { ...values, id: initialData?.id, userId: userDetails.id }; // add id to the data
       const response = await axios.put('/api/project', data);
       if (response.status === 200) {
         toast('Successfully updated project');
         await revalidateQuery();
-        handleIsSubmitFalse()
+        handleIsSubmitFalse();
       }
     } catch (error) {
-      handleIsSubmitFalse()
+      handleIsSubmitFalse();
       // console.error('Form submission error', error);
       toast.error('Failed to submit the form. Please try again.');
     }

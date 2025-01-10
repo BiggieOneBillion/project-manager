@@ -291,7 +291,7 @@ export function KanbanBoard() {
     setActiveColumn(null);
     setActiveTask(null);
 
-    // // console.log("Event =", event);
+    console.log('Event =', event);
 
     const { active, over } = event;
     if (!over) return;
@@ -299,7 +299,11 @@ export function KanbanBoard() {
     const activeId = active.id;
     const overId = over.id as string;
 
+    console.log('Before the checks');
+
     if (!hasDraggableData(active)) return;
+
+    console.log('Passed the checks');
 
     const activeData = active.data.current;
 
@@ -310,7 +314,7 @@ export function KanbanBoard() {
       setColumns(arrayMove(columns, activeColumnIndex, overColumnIndex));
     }
 
-    // // console.log("Active Data:", activeData);
+    console.log('Active Data:', activeData);
     // If the active item is a task
     if (activeData?.type === 'Task') {
       const activeTaskIndex = tasks.findIndex((task) => task.id === activeId);
@@ -319,18 +323,23 @@ export function KanbanBoard() {
       if (!activeTask) return;
 
       // Check if the task is dropped into a different column
-      // // console.log(activeTask.status !== event?.collisions[1].id);
+      if (event?.collisions) {
+        console.log(activeTask.status !== event?.collisions[1].id);
+      }
 
       // @ts-ignore
       if (activeTask.status === event?.collisions[1].id) {
         // eslint-disable-next-line no-console
-        // // console.log('Hello');
+        console.log('Hello');
         // Update task status
         // @ts-ignore
         const updatedTask = {
           ...activeTask,
           status: event?.collisions[1].id as ColumnId
         };
+
+        console.log('UPDATED TASK:', updatedTask);
+
         const updatedTasks = tasks.map((task) =>
           task.id === activeId ? updatedTask : task
         );

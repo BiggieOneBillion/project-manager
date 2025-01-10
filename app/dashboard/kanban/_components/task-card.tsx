@@ -1,10 +1,8 @@
-"use client"
-import { Button } from '@/components/ui/button';
+'use client';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { cva } from 'class-variance-authority';
-import { GripVertical } from 'lucide-react';
 
 import { EmployeeAvatar } from '@/app/dashboard/project/manage/[projectId]/_components/employee-avatar';
 import { v4 } from 'uuid';
@@ -72,32 +70,29 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
         dragging: isOverlay ? 'overlay' : isDragging ? 'over' : undefined
       })}
     >
-      <CardHeader className="space-between relative flex flex-row border-b-2 border-secondary px-3 py-3">
-        <Button
-          variant={'ghost'}
-          {...attributes}
-          {...listeners}
-          className="-ml-2 h-auto cursor-grab p-1 text-secondary-foreground/50"
-        >
-          <span className="sr-only">Move task</span>
-          <GripVertical />
-        </Button>
-        <Action id={task.id}/>
+      <CardHeader className="relative flex flex-row items-center justify-end border-b-2 border-secondary px-3 py-3">
+        <div className=" ml-3">
+          <Action id={task.id} />
+        </div>
+        {/* <span>
+         <MoreVerticalIcon size={16}/>
+       </span> */}
       </CardHeader>
       <CardContent className="whitespace-pre-wrap px-3 pb-6 pt-3 text-left">
         <div className="flex items-center justify-between">
-          <div className='flex flex-col gap-1'>
-          <span className='text-sm capitalize max-w-[200px]'>
-             {task.title}
-          </span>
-          <hr />
-          <span className='text-slate-400 text-xs capitalize max-w-[200px]'>
-            {task.description}
-          </span>
+          <div className="flex w-full flex-col gap-1">
+            <span className="max-w-[200px] text-sm capitalize">
+              {task.title}
+            </span>
+            <span className="max-w-[200px] text-xs capitalize text-slate-400">
+              {task.description}
+            </span>
           </div>
           <ul className="flex items-center gap-1">
             {
-              task.employees.map((employee:string) => <EmployeeAvatar employeeId={employee} key={v4()}  />) // provide type
+              task.employees.map((employee: string) => (
+                <EmployeeAvatar employeeId={employee} key={v4()} />
+              )) // provide type
             }
           </ul>
         </div>

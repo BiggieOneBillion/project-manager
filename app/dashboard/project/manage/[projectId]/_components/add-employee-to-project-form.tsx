@@ -26,6 +26,7 @@ import { useEmployeeData } from '@/hooks/use-employee-data';
 import { Employee } from '@/constants/data';
 import axios from 'axios';
 import { useButtonState } from '@/hooks/use-button-state';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   employeeId: z.string(),
@@ -43,6 +44,8 @@ export default function AddEmployeesToProjectForm({
     resolver: zodResolver(formSchema)
   });
 
+  const router = useRouter();
+
   const { data, isLoading } = useEmployeeData();
   // const {data: ProjectData, isLoading: isProjectDataLoading} = useProjectData();
 
@@ -51,6 +54,12 @@ export default function AddEmployeesToProjectForm({
 
   if (isLoading) {
     return <div className="text-xl font-medium">Loading...</div>;
+  }
+
+  if (data && data.length === 0) {
+    toast.error('YOU HAVE NO EMPLOYEE!!, ADD EMPLOYEE FIRST');
+    router.push('/dashboard/employee/new');
+    return;
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -75,7 +84,7 @@ export default function AddEmployeesToProjectForm({
     }
   }
 
-  // const project = ProjectData?.filter((item:Product2) => item.id === projectId);
+  // const project = ProjectData?.filter((item:Project) => item.id === projectId);
   // const projectEmployeeList = project[0].employee_list
   // const displayedList = data?.map((item:(Employee & {projects: string[]})) => {
   //      let isPresent = item.projects.map(item => {

@@ -26,6 +26,7 @@ import { Employee } from '@/constants/data';
 import axios from 'axios';
 import { v4 } from 'uuid';
 import { useButtonState } from '@/hooks/use-button-state';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   title: z.string().min(1),
@@ -68,30 +69,32 @@ export default function EditTaskForm({
     }
   });
 
+  const router = useRouter();
+
   const { data, isLoading } = useEmployeeData();
 
-  // const [isSubmitting, setIsSubmitting] = useState(false);
-  const {handleIsSubmitFalse, handleIsSubmitTrue, StateButton} = useButtonState()
+  const { handleIsSubmitFalse, handleIsSubmitTrue, StateButton } =
+    useButtonState();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    handleIsSubmitTrue()
+    handleIsSubmitTrue();
     try {
       const response = await axios.put('/api/task', {
         ...values,
         id: taskId,
         project_id: projectId
       });
-      // form.reset({
-      //   title: '',
-      //   description: ''
-      // });
+
       if (response.status === 200) {
         toast.success('Task Updated successfully created!');
-       handleIsSubmitFalse()
+        handleIsSubmitFalse();
       }
-      // router.back();
+
+      setTimeout(() => {
+        router.back();
+      }, 1500);
     } catch (error) {
-      handleIsSubmitFalse()
+      handleIsSubmitFalse();
       // console.error("Form submission error", error);
       toast.error('Failed to submit the form. Please try again.');
     }
@@ -102,12 +105,12 @@ export default function EditTaskForm({
   }
 
   return (
-    <section className="space-y-6 p-10">
+    <section className="space-y-6 p-4 md:p-10">
       <h1 className="text-xl font-semibold">Edit Task Form</h1>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="mx-autoy z-[10000] max-w-3xl  space-y-8"
+          className="mx-autoy z-[10000] w-full space-y-8  md:max-w-3xl"
         >
           <FormField
             control={form.control}
@@ -143,7 +146,7 @@ export default function EditTaskForm({
             )}
           />
           {/* status and assign */}
-          <div className="grid grid-cols-12 gap-4">
+          <div className="gap-4 md:grid md:grid-cols-12">
             <div className="col-span-6">
               <FormField
                 control={form.control}
@@ -163,10 +166,10 @@ export default function EditTaskForm({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                      <SelectItem value="TODO">TODO</SelectItem>
-                      <SelectItem value="IN-PROGRESS">IN-PROGRESS</SelectItem>
-                      <SelectItem value="IN-REVIEW">IN-REVIEW</SelectItem>
-                      <SelectItem value="DONE">DONE</SelectItem>
+                        <SelectItem value="TODO">TODO</SelectItem>
+                        <SelectItem value="IN-PROGRESS">IN-PROGRESS</SelectItem>
+                        <SelectItem value="IN-REVIEW">IN-REVIEW</SelectItem>
+                        <SelectItem value="DONE">DONE</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormDescription>
@@ -219,16 +222,6 @@ export default function EditTaskForm({
           {/* submit button */}
           <div className="flex justify-end">
             <StateButton />
-            {/* <Button disabled={isSubmitting} type="submit">
-              {isSubmitting ? (
-                <span className='flex items-center gap-2'>
-                  <Loader2 className="animate-spin" />
-                  Please wait
-                </span>
-              ) : (
-                'Submit'
-              )}
-            </Button> */}
           </div>
         </form>
       </Form>

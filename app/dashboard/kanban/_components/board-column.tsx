@@ -2,9 +2,7 @@ import { useDndContext, type UniqueIdentifier } from '@dnd-kit/core';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { cva } from 'class-variance-authority';
-import { GripVertical } from 'lucide-react';
 import { useMemo } from 'react';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ColumnActions } from './column-action';
 import { TaskCard } from './task-card';
@@ -59,7 +57,7 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
   };
 
   const variants = cva(
-    'min-h-[25vh] max-h-[75vh] w-[300px] max-w-full bg-secondary flex flex-col flex-shrink-0 snap-center',
+    'min-h-[25vh] max-h-[75vh] w-full md:w-[300px] max-w-full bg-secondary flex flex-col flex-shrink-0 snap-center',
     {
       variants: {
         dragging: {
@@ -80,7 +78,7 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
       })}
     >
       <CardHeader className="space-between flex flex-row items-center border-b-2 p-4 text-left font-semibold">
-        <Button
+        {/* <Button
           variant={'ghost'}
           {...attributes}
           {...listeners}
@@ -88,7 +86,7 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
         >
           <span className="sr-only">{`Move column: ${column.title}`}</span>
           <GripVertical />
-        </Button>
+        </Button> */}
         {/*<span className="mr-auto !mt-0"> {column.title}</span>*/}
         {/*<Input*/}
         {/*  defaultValue={column.title}*/}

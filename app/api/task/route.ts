@@ -83,15 +83,16 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
-  try {
-    const record = await pb.collection('Task').getFullList();
+// GET ALL TASK BELONGING TO ALL USERS---ONLY FOR ADMIN.
+// export async function GET() {
+//   try {
+//     const record = await pb.collection('Task').getFullList();
 
-    return NextResponse.json({ message: 'Successful', record });
-  } catch (error) {
-    return NextResponse.json({ error: error }, { status: 500 });
-  }
-}
+//     return NextResponse.json({ message: 'Successful', record });
+//   } catch (error) {
+//     return NextResponse.json({ error: error }, { status: 500 });
+//   }
+// }
 
 export async function PUT(request: NextRequest) {
   const body = await request.json();

@@ -24,14 +24,13 @@ const formSchema = z.object({
 type UserFormValue = z.infer<typeof formSchema>;
 
 export default function UserAuthForm() {
-
-  const {handleIsSubmitFalse, handleIsSubmitTrue, StateButton} = useButtonState();
+  const { handleIsSubmitFalse, handleIsSubmitTrue, StateButton } =
+    useButtonState();
   const defaultValues = {
     email: 'demo@gmail.com'
   };
   const form = useForm<UserFormValue>({
-    resolver: zodResolver(formSchema),
-    defaultValues
+    resolver: zodResolver(formSchema)
   });
 
   const router = useRouter();
@@ -41,7 +40,7 @@ export default function UserAuthForm() {
   );
 
   const onSubmit = async (data: UserFormValue) => {
-      handleIsSubmitTrue()
+    handleIsSubmitTrue();
     try {
       const response = await axios.post('/api/auth-custom', {
         email: data.email
@@ -52,10 +51,10 @@ export default function UserAuthForm() {
         setTimeout(() => {
           router.push('/dashboard/create-project');
         }, 1500);
-        handleIsSubmitFalse()
+        handleIsSubmitFalse();
       }
     } catch (error) {
-      handleIsSubmitFalse()
+      handleIsSubmitFalse();
       toast.error('Try Aagin!');
     }
   };
@@ -85,7 +84,7 @@ export default function UserAuthForm() {
             )}
           />
 
-         <StateButton />
+          <StateButton />
         </form>
       </Form>
       <div className="relative">

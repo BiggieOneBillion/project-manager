@@ -117,7 +117,7 @@ export type Product = {
   category: string;
 };
 
-export interface Product2 {
+export interface Project {
   category: string;
   collectionId: string;
   collectionName: string;
@@ -130,7 +130,7 @@ export interface Product2 {
   project_name: string;
   task: string[];
   updated: string;
-};
+}
 
 export const navItems: NavItem[] = [
   {
@@ -156,7 +156,7 @@ export const navItems: NavItem[] = [
     shortcut: ['e', 'e'],
     isActive: false,
     items: [] // No child items
-  },
+  }
   // {
   //   title: 'Project Manager',
   //   url: "",

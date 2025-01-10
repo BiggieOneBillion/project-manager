@@ -1,8 +1,8 @@
 'use client';
-import { Product2 } from '@/constants/data';
+import { Project } from '@/constants/data';
 import { ColumnDef } from '@tanstack/react-table';
 import { CellAction } from './cell-action';
-import Link from "next/link";
+import Link from 'next/link';
 
 // {
 //   category: 'm@example.com',
@@ -19,15 +19,22 @@ import Link from "next/link";
 //   updated: '2024-11-28 11:17:16.200Z'
 // },
 
-function formatDate(date:string){
+function formatDate(date: string) {
   return new Date(date).toLocaleDateString();
 }
 
-export const columns: ColumnDef<Product2>[] = [
+export const columns: ColumnDef<Project>[] = [
   {
     accessorKey: 'project_name',
     header: 'PROJECT NAME',
-    cell: ({row}) => <Link href={`/dashboard/project/manage/${row.original.id}`} key={row.original.id}>{row.original.project_name}</Link>
+    cell: ({ row }) => (
+      <Link
+        href={`/dashboard/project/manage/${row.original.id}`}
+        key={row.original.id}
+      >
+        {row.original.project_name}
+      </Link>
+    )
   },
   {
     accessorKey: 'category',

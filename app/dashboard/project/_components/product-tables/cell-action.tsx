@@ -8,22 +8,20 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Product2 } from '@/constants/data';
+import { Project } from '@/constants/data';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import {toast} from "sonner";
-import axios from "axios";
-import {useRevalidateQuery} from "@/hooks/use-revalidate-query";
-
-
+import { toast } from 'sonner';
+import axios from 'axios';
+import { useRevalidateQuery } from '@/hooks/use-revalidate-query';
 
 interface CellActionProps {
-  data: Product2;
+  data: Project;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
-   const revalidate = useRevalidateQuery('projects');
+  const revalidate = useRevalidateQuery('projects');
 
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -32,7 +30,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const onConfirm = async () => {
     setLoading(true);
     try {
-       await axios.delete(`/api/project/${data.id}`);
+      await axios.delete(`/api/project/${data.id}`);
       // Invalidate and refetch the 'project' query after a successful mutation
       await revalidate();
       toast.success('Deleted project from database');
