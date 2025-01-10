@@ -9,6 +9,8 @@ export async function DELETE(
   try {
     const id = (await params).id;
 
+    const baseUrl = _request.url.split('/').splice(0, 3).join('/');
+
     // Get the project to delete
     const record = await pb.collection('Project').getOne(id);
 
@@ -16,7 +18,7 @@ export async function DELETE(
     for (const taskId of record.task) {
       try {
         const taskRequest = new NextRequest(
-          `${process.env.WEBSITE_URL}/api/task/${taskId}`
+          `${baseUrl}/api/task/${taskId}`
         ) as unknown as Request;
 
         const taskParam = { params: Promise.resolve({ id: taskId }) };
@@ -40,7 +42,6 @@ export async function DELETE(
       try {
         await pb.collection('ProjectEmployee').delete(employee.id);
       } catch (error: any) {
-       
         return NextResponse.json(
           {
             error: `Failed to delete related ProjectEmployee ${employee.id}. ${error.message}`
