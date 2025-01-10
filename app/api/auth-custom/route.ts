@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pb from '../../../lib/pocketbase';
+import { generateToken } from '../utils/auth';
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -8,13 +9,24 @@ export async function POST(request: NextRequest) {
     const result = await pb.collection('Managers').getList(); // get the entire users list
     const dataList = result.items; // get the arr of users from the response
     const check = dataList.filter((item: any) => item.email === body.email); // check if any mail matches with the provided email
+
     if (check.length > 0) {
       // const token = generateToken({ email: body.email, id: check[0].id });
       // user exits so we get the user id and use it to fetch projects associated with user
-      return NextResponse.json({
+      const response = NextResponse.json({
         message: 'Successfully Logged in',
         data: check[0]
       });
+
+      const token = await generateToken({ isAuthenticated: true });
+      // Delete the "auth" cookie by setting its maxAge to 0 (expires immediately)
+      response.cookies.set('auth', token, {
+        httpOnly: true,
+        // secure: process.env.NODE_ENV === "production", // Make sure it's secure in production
+        path: '/' // Accessible from all paths
+      });
+
+      return response;
     }
     // if not we go ahead to create the user using their email.
     const data = {
@@ -29,10 +41,20 @@ export async function POST(request: NextRequest) {
 
     // after creating the record then we store the id ,and we use to save the projects e.t.c
 
-    return NextResponse.json({
+    const res = NextResponse.json({
       message: 'Successfully registered',
       data: record
     });
+
+    const token = await generateToken({ isAuthenticated: true });
+    // Delete the "auth" cookie by setting its maxAge to 0 (expires immediately)
+    res.cookies.set('auth', token, {
+      httpOnly: true,
+      // secure: process.env.NODE_ENV === "production", // Make sure it's secure in production
+      path: '/' // Accessible from all paths
+    });
+
+    return res;
   } catch (error: unknown) {
     // // console.log(error);
 

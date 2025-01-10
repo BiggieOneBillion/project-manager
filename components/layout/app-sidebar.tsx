@@ -5,10 +5,10 @@ import {
   CollapsibleTrigger
 } from '@/components/ui/collapsible';
 
-
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupLabel,
   SidebarHeader,
@@ -23,12 +23,24 @@ import {
 import { navItems } from '@/constants/data';
 import {
   ChevronRight,
+  ChevronsUpDown,
+  LogOut,
   SquareKanban
 } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
 import { Icons } from '../icons';
+import { useUserDetailsStore } from '@/lib/manager-store';
+import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
+import {
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger
+} from '../ui/dropdown-menu';
+import axios from 'axios';
+import { toast } from 'sonner';
 
 export const company = {
   name: 'Chef de projet',
@@ -37,8 +49,25 @@ export const company = {
 };
 
 export default function AppSidebar() {
-  // const { data: session } = useSession();
   const pathname = usePathname();
+
+  const details = useUserDetailsStore();
+
+  const router = useRouter();
+
+  const handleLogOut = async () => {
+    useUserDetailsStore.persist.clearStorage();
+
+    try {
+      const res = await axios.delete('/api/logout');
+      if (res.status === 200) {
+        toast.success('Logged Out');
+        router.push('/');
+      }
+    } catch (error) {
+      toast.error('Log out failed');
+    }
+  };
 
   return (
     <Sidebar collapsible="icon">
@@ -113,7 +142,7 @@ export default function AppSidebar() {
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
-      {/* <SidebarFooter>
+      <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
@@ -122,21 +151,9 @@ export default function AppSidebar() {
                   size="lg"
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
-                  <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage
-                      src={session?.user?.image || ''}
-                      alt={session?.user?.name || ''}
-                    />
-                    <AvatarFallback className="rounded-lg">
-                      {session?.user?.name?.slice(0, 2)?.toUpperCase() || 'CN'}
-                    </AvatarFallback>
-                  </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">
-                      {session?.user?.name || ''}
-                    </span>
-                    <span className="truncate text-xs">
-                      {session?.user?.email || ''}
+                    <span className="truncate font-semibold text-white">
+                      {details.userDetails.email || 'Log Out'}
                     </span>
                   </div>
                   <ChevronsUpDown className="ml-auto size-4" />
@@ -148,47 +165,7 @@ export default function AppSidebar() {
                 align="end"
                 sideOffset={4}
               >
-                <DropdownMenuLabel className="p-0 font-normal">
-                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                    <Avatar className="h-8 w-8 rounded-lg">
-                      <AvatarImage
-                        src={session?.user?.image || ''}
-                        alt={session?.user?.name || ''}
-                      />
-                      <AvatarFallback className="rounded-lg">
-                        {session?.user?.name?.slice(0, 2)?.toUpperCase() ||
-                          'CN'}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-semibold">
-                        {session?.user?.name || ''}
-                      </span>
-                      <span className="truncate text-xs">
-                        {' '}
-                        {session?.user?.email || ''}
-                      </span>
-                    </div>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-
-                <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    <BadgeCheck />
-                    Account
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <CreditCard />
-                    Billing
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Bell />
-                    Notifications
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogOut}>
                   <LogOut />
                   Log out
                 </DropdownMenuItem>
@@ -196,7 +173,7 @@ export default function AppSidebar() {
             </DropdownMenu>
           </SidebarMenuItem>
         </SidebarMenu>
-      </SidebarFooter> */}
+      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

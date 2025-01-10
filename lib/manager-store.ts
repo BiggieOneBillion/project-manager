@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 export type State = {
   projectId: string;
@@ -60,6 +60,6 @@ export const useUserDetailsStore = create<UserState & UserAction>()(
           }
         }))
     }),
-    { name: 'details-store' }
+    { name: 'details-store', storage: createJSONStorage(() => sessionStorage) }
   )
 );
